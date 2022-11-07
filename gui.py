@@ -21,11 +21,8 @@ class RootWindow():
         # left frame
         self.frame_left = customtkinter.CTkFrame(master)
 
-        button1 = customtkinter.CTkButton(self.frame_left, text="Open Patient Window", command=self.open)
-        button1.grid(row=0, column=0, columnspan=2, padx=10, pady=20)
-
         user_label = customtkinter.CTkLabel(self.frame_left, text='User Number:')
-        user_label.grid(row=1, column=0,)
+        user_label.grid(row=1, column=0,padx=10, pady=20)
         self.user_entry_var = customtkinter.StringVar()
         user_entry = customtkinter.CTkEntry(self.frame_left, textvariable=self.user_entry_var)
         user_entry.grid(row=1, column=1, padx=10)
@@ -34,28 +31,33 @@ class RootWindow():
         trial_label.grid(row=2, column=0)
         self.trial_entry_var = customtkinter.StringVar()
         trial_entry = customtkinter.CTkEntry(self.frame_left, textvariable=self.trial_entry_var)
-        trial_entry.grid(row=2, column=1, padx=10)
+        trial_entry.grid(row=3, column=1, padx=10)
 
         button1 = customtkinter.CTkButton(self.frame_left, text="Submit User/Trial Data", command=self.update_user_data)
-        button1.grid(row=3, column=0, columnspan=2, padx=10, pady=20)
+        button1.grid(row=4, column=0, columnspan=2, padx=10, pady=20)
 
         collect_data_box = customtkinter.CTkCheckBox(self.frame_left, text="Record EMG Data", command=self.record_data)
-        collect_data_box.grid(row=4, column=0, columnspan=2, padx=50, pady=10)
-
-        self.run_trial_but = customtkinter.CTkButton(self.frame_left, text="Run Trial", )
-        self.run_trial_but.grid(row=5, column=0, columnspan=2, padx=10, pady=20)
+        collect_data_box.grid(row=5, column=0, columnspan=2, padx=50, pady=10)
 
         self.frame_left.grid(padx=40, pady=50, row=0, column=0)
 
         # right frame
         self.frame_right = customtkinter.CTkFrame(master)
 
+        self.run_trial_but = customtkinter.CTkButton(self.frame_right, text="Run Trial", )
+        self.run_trial_but.grid(row=1, column=0, columnspan=2, padx=10, pady=20)
+
         stop_but = customtkinter.CTkButton(self.frame_right, text="Stop Trial", command=self.stop_trial)
-        stop_but.grid(padx=50, pady=20, row=4, column=0)
-
-
+        stop_but.grid(padx=50, pady=20, row=2, column=0)
+        self.block = StringVar()
+        block_select = customtkinter.CTkComboBox(self.frame_right, variable=self.block,
+                                                 values=['Practice Block', 'Block 1', 'Block 2', 'Block 3', 'Block 4', 'Block 5', 'Block 6', 'Block 7', 'Block 8'], state='normal',
+                                                 )
+        block_select.grid(row=3, column=0, pady=(0, 20))
 
         self.frame_right.grid(padx=20, pady=50, row=0, column=1)
+
+
 
     def open(self):
         self.patientWindow = PatientWindow()
