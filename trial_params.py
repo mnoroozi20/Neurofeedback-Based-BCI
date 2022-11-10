@@ -6,6 +6,6 @@ Username = "Test"  # full name of patient
 
 number_of_trials = 1  # how many trial that you want to run
 
-Trial_duration = 53  # how long is each one of your trial, previous time = 42 seconds
+Trial_duration = 50   # how long is each one of your trial, (50 images, 1 image per sec)
 
 task_list = "task_3"  # /task_2/ task_3/ task_4 /task_5
