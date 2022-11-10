@@ -1,6 +1,6 @@
 import sys
 from PyQt5 import QtGui, QtCore, QtWidgets
-from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtWidgets import *
 
 
 class Window(QtWidgets.QWidget):
@@ -22,6 +22,7 @@ class Window(QtWidgets.QWidget):
 
         self.line = QtWidgets.QLineEdit(self)
         self.line.setFixedWidth(200)
+        # label1.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.line.setStyleSheet('background: #EEEEEE; margin-right: 20px')
 
         start_btn = QtWidgets.QPushButton('Start', self)
@@ -38,12 +39,12 @@ class Window(QtWidgets.QWidget):
         label2.setFixedWidth(50)
         label2.setStyleSheet('font-size: 15px')
 
-        combobox = QtWidgets.QComboBox(self)
-        combobox.addItem('Pre-Evaluation')
-        combobox.addItem('Neurofeedback')
-        combobox.addItem('Post-Evaluation')
-        combobox.setFixedWidth(100)
-        combobox.setStyleSheet('background: #FFFFFF; margin-left: 1px; margin-right: 1px')
+        self.combobox = QtWidgets.QComboBox(self)
+        self.combobox.addItem('Pre-Evaluation')
+        self.combobox.addItem('Neurofeedback')
+        self.combobox.addItem('Post-Evaluation')
+        self.combobox.setFixedWidth(100)
+        self.combobox.setStyleSheet('background: #FFFFFF; margin-left: 1px; margin-right: 1px')
 
         label3 = QtWidgets.QLabel('Stage:')
         label3.setFixedWidth(50)
@@ -65,7 +66,7 @@ class Window(QtWidgets.QWidget):
         grid.addWidget(start_btn, 0, 2)
         grid.addWidget(stop_btn, 0, 3)
         grid.addWidget(label2, 1, 0)
-        grid.addWidget(combobox, 1, 1)
+        grid.addWidget(self.combobox, 1, 1)
         grid.addWidget(label3, 2, 0)
         grid.addWidget(block, 2, 1)
         grid.addWidget(self.button, 0, 4)
@@ -77,6 +78,10 @@ class Window(QtWidgets.QWidget):
 
     def func(self):
         print(self.line.text())
+
+    def get_phase(self):
+        phase = self.combobox.currentText()
+        return phase
 
 
 class SubWindow(QtWidgets.QWidget):
