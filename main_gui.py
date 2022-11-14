@@ -8,15 +8,18 @@ from PyQt5.QtWidgets import *
 class Window(QtWidgets.QWidget):
     def __init__(self):
         super(Window, self).__init__()
-        # self.setGeometry(50,50,1000,500)
+        self.setGeometry(50,50,1000,500)
         self.setWindowTitle("Main Window")
         self.setStyleSheet('background: #505050')
+        self.grid = QtWidgets.QGridLayout()
+        self.setLayout(self.grid)
+        # Sub Window
+        self.sub_window = SubWindow()
         self.stage = 3
         self.home()
 
     def home(self):
-        grid = QtWidgets.QGridLayout()
-        self.setLayout(grid)
+        self.blocks = 0
 
         label1 = QtWidgets.QLabel('Patient:')
         label1.setFixedWidth(50)
@@ -27,19 +30,19 @@ class Window(QtWidgets.QWidget):
         # label1.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.line.setStyleSheet('background: #EEEEEE; margin-right: 20px')
 
-        start_btn = QtWidgets.QPushButton('Start', self)
-        start_btn.setFixedWidth(75)
-        start_btn.setStyleSheet('background: #228C22')
-        start_btn.clicked.connect(self.func)
+        self.start_btn = QtWidgets.QPushButton('Start', self)
+        self.start_btn.setFixedWidth(75)
+        self.start_btn.setStyleSheet('background: #228C22')
+        self.start_btn.clicked.connect(self.sub_window.show)
 
-        stop_btn = QtWidgets.QPushButton('Stop', self)
-        stop_btn.setFixedWidth(75)
-        stop_btn.setStyleSheet('background: #B80F0A')
-        stop_btn.clicked.connect(self.func)
+        self.stop_btn = QtWidgets.QPushButton('Stop', self)
+        self.stop_btn.setFixedWidth(75)
+        self.stop_btn.setStyleSheet('background: #B80F0A')
+        self.stop_btn.clicked.connect(self.func)
 
-        label2 = QtWidgets.QLabel('Phase:')
-        label2.setFixedWidth(50)
-        label2.setStyleSheet('font-size: 15px')
+        self.label2 = QtWidgets.QLabel('Phase:')
+        self.label2.setFixedWidth(50)
+        self.label2.setStyleSheet('font-size: 15px')
 
         self.combobox = QtWidgets.QComboBox(self)
         self.combobox.addItem('Pre-Evaluation')
@@ -47,43 +50,93 @@ class Window(QtWidgets.QWidget):
         self.combobox.addItem('Post-Evaluation')
         self.combobox.setFixedWidth(100)
         self.combobox.setStyleSheet('background: #FFFFFF; margin-left: 1px; margin-right: 1px')
+        self.combobox.activated[str].connect(self.onStageChange)
 
-        label3 = QtWidgets.QLabel('Stage:')
-        label3.setFixedWidth(50)
-        label3.setStyleSheet('font-size: 15px')
+        self.label3 = QtWidgets.QLabel('Stage:')
+        self.label3.setFixedWidth(50)
+        self.label3.setStyleSheet('font-size: 15px')
 
-        self.image_button = QPushButton(self)
-        self.image_button.setFixedWidth(120)
-        self.image_button.setText('Image Window')
-        self.image_button.setStyleSheet('font-size:15px; background: #DF6D22;')
+        self.image = QtGui.QPixmap("Asssets/BlockLoad0_8.png").scaled(300, 300, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
+        self.image1 = QtGui.QPixmap("Asssets/BlockLoad1_8.png").scaled(300, 300, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
+        self.image2 = QtGui.QPixmap("Asssets/BlockLoad2_8.png").scaled(300, 300, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
+        self.image3 = QtGui.QPixmap("Asssets/BlockLoad3_8.png").scaled(300, 300, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
+        self.image4 = QtGui.QPixmap("Asssets/BlockLoad4_8.png").scaled(300, 300, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
+        self.image5 = QtGui.QPixmap("Asssets/BlockLoad5_8.png").scaled(300, 300, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
+        self.image6 = QtGui.QPixmap("Asssets/BlockLoad6_8.png").scaled(300, 300, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
+        self.image7 = QtGui.QPixmap("Asssets/BlockLoad7_8.png").scaled(300, 300, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
+        self.image8 = QtGui.QPixmap("Asssets/BlockLoad8_8.png").scaled(300, 300, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
 
-        image = QtGui.QPixmap("Assets/BlockLoad" + str(self.stage) + "_5.png").scaled(175, 175, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
-        block = QtWidgets.QLabel()
-        block.setPixmap(image)
-        block.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        block.setFixedWidth(175)
+        self.block = QtWidgets.QLabel()
+        self.block.setPixmap(self.image3)
+        self.block.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.block.setFixedWidth(300)
+        self.block.setFixedHeight(50)
 
-        grid.addWidget(label1, 0, 0)
-        grid.addWidget(self.line, 0, 1)
-        grid.addWidget(start_btn, 0, 2)
-        grid.addWidget(stop_btn, 0, 3)
-        grid.addWidget(label2, 1, 0)
-        grid.addWidget(self.combobox, 1, 1)
-        grid.addWidget(label3, 2, 0)
-        grid.addWidget(block, 2, 1)
-        grid.addWidget(self.image_button, 3, 1)
+        self.grid.addWidget(label1, 0, 0)
+        self.grid.addWidget(self.line, 0, 1)
+        self.grid.addWidget(self.start_btn, 0, 2)
+        self.grid.addWidget(self.stop_btn, 0, 3)
+        self.grid.addWidget(self.label2, 1, 0)
+        self.grid.addWidget(self.combobox, 1, 1)
+        self.grid.addWidget(self.label3, 2, 0)
+        self.grid.addWidget(self.block, 2, 1)
         self.show()
 
-        # Sub Window
-        self.sub_window = SubWindow()
-        self.image_button.clicked.connect(self.sub_window.show)
+        
 
     def func(self):
-        print(self.line.text())
+        sys.exit(app.exec_())
 
     def get_phase(self):
         phase = self.combobox.currentText()
         return phase
+    
+    def onStageChange(self, text):
+        if text == 'Neurofeedback':
+            self.blocks = 1
+
+            self.block2 = QtWidgets.QLabel()
+            self.block2.setPixmap(self.image)
+            self.block2.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+            self.block2.setFixedWidth(300)
+            self.block2.setFixedHeight(50)
+
+            self.block3 = QtWidgets.QLabel()
+            self.block3.setPixmap(self.image)
+            self.block3.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+            self.block3.setFixedWidth(300)
+            self.block3.setFixedHeight(50)
+
+            self.block4 = QtWidgets.QLabel()
+            self.block4.setPixmap(self.image)
+            self.block4.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+            self.block4.setFixedWidth(300)
+            self.block4.setFixedHeight(50)
+
+            self.block5 = QtWidgets.QLabel()
+            self.block5.setPixmap(self.image)
+            self.block5.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+            self.block5.setFixedWidth(300)
+            self.block5.setFixedHeight(50)
+
+            self.grid.addWidget(self.block2,3,1)
+            self.grid.addWidget(self.block3,4,1)
+            self.grid.addWidget(self.block4,5,1)
+            self.grid.addWidget(self.block5,6,1)
+        elif text == 'Post-Evaluation':
+            if self.blocks == 1:
+                self.block5.setParent(None)
+                self.block4.setParent(None)
+                self.block3.setParent(None)
+                self.block2.setParent(None)
+                self.blocks = 0
+        elif text == 'Pre-Evaluation':
+            if self.blocks == 1:
+                self.block5.setParent(None)
+                self.block4.setParent(None)
+                self.block3.setParent(None)
+                self.block2.setParent(None)
+                self.blocks = 0
 
 
 class SubWindow(QtWidgets.QWidget):
