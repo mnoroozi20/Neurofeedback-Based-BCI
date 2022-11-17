@@ -3,6 +3,8 @@ import sys
 from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import *
+import csv
+import time
 
 
 class Window(QtWidgets.QWidget):
@@ -24,6 +26,11 @@ class Window(QtWidgets.QWidget):
         label1 = QtWidgets.QLabel('Patient:')
         label1.setFixedWidth(50)
         label1.setStyleSheet('font-size: 15px; ')
+
+        self.patient_btn = QtWidgets.QPushButton('Add Patient Data', self)
+        self.patient_btn.setFixedWidth(100)
+        self.patient_btn.setStyleSheet('background: #1634EF')
+        self.patient_btn.clicked.connect(self.add_patient_data)
 
         self.line = QtWidgets.QLineEdit(self)
         self.line.setFixedWidth(200)
@@ -76,10 +83,11 @@ class Window(QtWidgets.QWidget):
         self.grid.addWidget(self.line, 0, 1)
         self.grid.addWidget(self.start_btn, 0, 2)
         self.grid.addWidget(self.stop_btn, 0, 3)
-        self.grid.addWidget(self.label2, 1, 0)
-        self.grid.addWidget(self.combobox, 1, 1)
-        self.grid.addWidget(self.label3, 2, 0)
-        self.grid.addWidget(self.block, 2, 1)
+        self.grid.addWidget(self.patient_btn, 1, 1)
+        self.grid.addWidget(self.label2, 2, 0)
+        self.grid.addWidget(self.combobox, 2, 1)
+        self.grid.addWidget(self.label3, 3, 0)
+        self.grid.addWidget(self.block, 3, 1)
         self.show()
 
         
@@ -119,10 +127,10 @@ class Window(QtWidgets.QWidget):
             self.block5.setFixedWidth(300)
             self.block5.setFixedHeight(50)
 
-            self.grid.addWidget(self.block2,3,1)
-            self.grid.addWidget(self.block3,4,1)
-            self.grid.addWidget(self.block4,5,1)
-            self.grid.addWidget(self.block5,6,1)
+            self.grid.addWidget(self.block2,4,1)
+            self.grid.addWidget(self.block3,5,1)
+            self.grid.addWidget(self.block4,6,1)
+            self.grid.addWidget(self.block5,7,1)
         elif text == 'Post-Evaluation':
             if self.blocks == 1:
                 self.block5.setParent(None)
@@ -138,6 +146,14 @@ class Window(QtWidgets.QWidget):
                 self.block2.setParent(None)
                 self.blocks = 0
 
+    def add_patient_data(self):
+        trial_data = self.line.text()
+        with open('neruo.csv', 'w') as file:
+            writer = csv.writer(file)
+            writer.writerow(['Patient Name '])
+            writer.writerow(trial_data)  # this technically iterates so will be wonky with single string till more info is captured
+        print("Patient Data Collected")
+
 
 class SubWindow(QtWidgets.QWidget):
     def __init__(self):
@@ -150,8 +166,6 @@ class SubWindow(QtWidgets.QWidget):
         self.label = QtWidgets.QLabel()
         self.layout.addWidget(self.label, 0, 0, 1, 2)
         self.label.setMinimumSize(200, 200)
-        # the label alignment property is always maintained even when the contents
-        # change, so there is no need to set it each time
         self.label.setAlignment(QtCore.Qt.AlignCenter)
 
         self.loadImageButton = QtWidgets.QPushButton('Load image')
@@ -165,68 +179,21 @@ class SubWindow(QtWidgets.QWidget):
         self.loadImageButton.clicked.connect(self.load_image)
         self.nextImageButton.clicked.connect(self.next_image)
 
-        self.dirIterator = None
-        self.fileList = []
-
+        self.image_bank = iter(["Images/2.jpg", "Images/3.jpg", "Images/4.jpg", "Images/5.jpg", ])
         self.count = 2
-
-    # def load_image(self):
-    #     filename, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Select Image', '', 'Image Files (*.png *.jpg *.jpeg)')
-    #     if filename:
-    #         pixmap = QtGui.QPixmap(filename).scaled(self.label.size(), QtCore.Qt.KeepAspectRatio)
-    #         if pixmap.isNull():
-    #             return
-    #         self.label.setPixmap(pixmap)
-    #         dirpath = os.path.dirname(filename)
-    #         self.fileList = []
-    #         for f in os.listdir(dirpath):
-    #             fpath = os.path.join(dirpath, f)
-    #             if os.path.isfile(fpath) and f.endswith(('.png', '.jpg', '.jpeg')):
-    #                 self.fileList.append(fpath)
-    #         self.fileList.sort()
-    #         self.dirIterator = iter(self.fileList)
-    #         while True:
-    #             # cycle through the iterator until the current file is found
-    #             if next(self.dirIterator) == filename:
-    #                 break
-    #
-    # def next_image(self):
-    #     # ensure that the file list has not been cleared due to missing files
-    #     if self.fileList:
-    #         try:
-    #             filename = next(self.dirIterator)
-    #             pixmap = QtGui.QPixmap(filename).scaled(self.label.size(), QtCore.Qt.KeepAspectRatio)
-    #             if pixmap.isNull():
-    #                 # the file is not a valid image, remove it from the list
-    #                 # and try to load the next one
-    #                 self.fileList.remove(filename)
-    #                 self.nextImage()
-    #             else:
-    #                 self.label.setPixmap(pixmap)
-    #         except:
-    #             # the iterator has finished, restart it
-    #             self.dirIterator = iter(self.fileList)
-    #             self.nextImage()
-    #     else:
-    #         # no file list found, load an image
-    #         self.loadImage()
 
     def load_image(self):
 
-        pixmap = QPixmap('Images/1.jpg')
+        pixmap = QPixmap('Images/1.jpg').scaled(400, 400, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
         self.label.setPixmap(pixmap)
         self.resize(pixmap.width(), pixmap.height())
         self.show()
 
-        # Connect button to image updating
-
     def next_image(self):
-        # pic = QtGui.QLabel(self)
-        # pic.setGeometry(100, 10, 800, 800)
-        image_bank = ["Images/2.jpg", "Images/3.jpg", "Images/4.jpg", "Images/5.jpg", ]
-
-        self.label.setPixmap(QtGui.QPixmap(f"Images/{self.count}.jpg"))
+        current_pixmap = QPixmap(f"Images/{self.count}.jpg").scaled(400, 400, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
+        self.label.setPixmap(current_pixmap)
         self.count += 1
+        # need to use Qtimer to update using special slot to execute during timeout() function to change signal
 
 
 if __name__ == '__main__':
