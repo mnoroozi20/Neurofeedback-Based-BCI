@@ -8,7 +8,7 @@ import os
 import time
 import random
 from Trial_struct import *
-import gui
+import main_gui
 import get_param
 import serial
 import pygame

@@ -10,7 +10,7 @@ import time
 class Window(QtWidgets.QWidget):
     def __init__(self):
         super(Window, self).__init__()
-        self.setGeometry(50,50,1000,500)
+        self.setGeometry(50, 50, 1000, 500)
         self.setWindowTitle("Main Window")
         self.setStyleSheet('background: #505050')
         self.grid = QtWidgets.QGridLayout()
