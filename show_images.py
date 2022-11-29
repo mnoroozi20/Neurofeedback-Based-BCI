@@ -1,4 +1,4 @@
-# non-class based, depreciated
+### non-class based, depreciated ### (keeping for now just in case)
 
 import os
 from os import listdir

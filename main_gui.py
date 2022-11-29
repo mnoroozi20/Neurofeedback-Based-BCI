@@ -9,7 +9,6 @@ from os import listdir
 from image_display import *
 
 
-
 class Window(QtWidgets.QWidget):
     def __init__(self):
         super(Window, self).__init__()
@@ -204,9 +203,6 @@ class SubWindow(QtWidgets.QWidget):
         self.count += 1
         if current_pixmap.isNull():
             self.close()
-
-
-
 
 
 if __name__ == '__main__':
