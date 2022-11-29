@@ -1,3 +1,5 @@
+# non-class based, depreciated
+
 import os
 from os import listdir
 from tkinter import *
@@ -13,9 +15,9 @@ COUNT = 0
 
 # PARAMETERS NEEDED TO BE CHANGED TO CHANGE WHAT IMAGES ARE DISPLAYED
 # get the path or directory,  could update this folder dir automatically to get correct images on certain phase
-folder_dir = "C:/Users/tnlab/PycharmProjects/Neurofeedback-Based-BCI/Images/MaleFace"
-TIME_BETWEEN = 1000
-CURRENT_FOLDER = "MaleFace"
+folder_dir = "C:/Users/tnlab/PycharmProjects/Neurofeedback-Based-BCI/Images/IndoorScene"
+TIME_BETWEEN = 10
+CURRENT_FOLDER = "IndoorScene"
 
 for images in os.listdir(folder_dir):
     if images.endswith(".png") or images.endswith(".jpg") or images.endswith(".jpeg"):
@@ -38,8 +40,8 @@ label.pack()
 
 def next_image():
     global COUNT
-    if COUNT == 114:
-        next_img = Image.open(f"Images/{CURRENT_FOLDER}/{image_arr[COUNT]}")
+    if COUNT >= 50:  # count determined based off of how many images in folder
+        next_img = Image.open(f"Images/please-wait.png")
         next_img_resized = next_img.resize((800, 600), Image.Resampling.LANCZOS)
         photo_img = ImageTk.PhotoImage(next_img_resized)
         label.config(image=photo_img)

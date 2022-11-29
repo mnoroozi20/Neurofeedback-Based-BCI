@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import *
 import csv
 import time
 from os import listdir
+from image_display import *
 
 
 
@@ -42,7 +43,7 @@ class Window(QtWidgets.QWidget):
         self.start_btn = QtWidgets.QPushButton('Start', self)
         self.start_btn.setFixedWidth(75)
         self.start_btn.setStyleSheet('background: #228C22')
-        self.start_btn.clicked.connect(self.sub_window.show)
+        self.start_btn.clicked.connect(self.image_window)
 
         self.stop_btn = QtWidgets.QPushButton('Stop', self)
         self.stop_btn.setFixedWidth(75)
@@ -92,7 +93,13 @@ class Window(QtWidgets.QWidget):
         self.grid.addWidget(self.block, 3, 1)
         self.show()
 
-        
+    def image_window(self):
+        root = Tk()
+        root.geometry("%dx%d+%d+%d" % (800, 600, 300, 300))
+        root.title("Image Slideshow")
+        image_window = DisplayImage(root)
+        image_window.next_image()
+        root.mainloop()
 
     def func(self):
         sys.exit(app.exec_())
@@ -199,25 +206,7 @@ class SubWindow(QtWidgets.QWidget):
             self.close()
 
 
-        # need to use Qtimer to update using special slot to execute during timeout() function to change signal
 
-    # def image_iter(self):
-    #     path_of_the_directory = "C:/Users/tnlab/PycharmProjects/Neurofeedback-Based-BCI/Images"
-    #
-    #     for path, dirc, files in os.walk(path_of_the_directory):
-    #         for self.name in files:
-    #
-    #             # current_pixmap = QPixmap(f"Images/{name}").scaled(400, 400, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
-    #             # self.label.setPixmap(current_pixmap)
-    #
-    #             self.update_image(name=self.name)
-    #             time.sleep(1)
-    #
-    # def update_image(self, name):
-    #     pixmap = QPixmap(f"Images/{name}")
-    #     self.label.setPixmap(pixmap)
-
-# update image, then move to next image, update gui, next image, update gui
 
 
 if __name__ == '__main__':
