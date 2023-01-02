@@ -14,9 +14,9 @@ class DisplayImage:
         self.image_arr = []
         self.COUNT = 0
 
-        self.folder_dir = "C:/Users/tnlab/PycharmProjects/Neurofeedback-Based-BCI/Images/IndoorScene"
+        self.folder_dir = os.getcwd() + "/Images/Composite_Images/Block1"
         self.TIME_BETWEEN = 1000
-        self.CURRENT_FOLDER = "IndoorScene"
+        self.CURRENT_FOLDER = "Composite_Images/Block1"
 
         for images in os.listdir(self.folder_dir):
             if images.endswith(".png") or images.endswith(".jpg") or images.endswith(".jpeg"):
