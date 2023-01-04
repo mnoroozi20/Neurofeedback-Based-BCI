@@ -14,12 +14,13 @@ class Window(QtWidgets.QWidget):
         super(Window, self).__init__()
         self.setGeometry(50, 50, 1000, 500)
         self.setWindowTitle("Main Window")
-        self.setStyleSheet('background: #505050')
+        self.setStyleSheet('background: #707070')
         self.grid = QtWidgets.QGridLayout()
         self.setLayout(self.grid)
         # Sub Window
-        self.sub_window = SubWindow()
-        self.stage = 3
+        
+        self.sub_window_active = False
+        self.stage = 0
         self.home()
 
     def home(self):
@@ -42,7 +43,7 @@ class Window(QtWidgets.QWidget):
         self.start_btn = QtWidgets.QPushButton('Start', self)
         self.start_btn.setFixedWidth(75)
         self.start_btn.setStyleSheet('background: #228C22')
-        self.start_btn.clicked.connect(self.image_window)
+        self.start_btn.clicked.connect(self.run_next_stage)
 
         self.stop_btn = QtWidgets.QPushButton('Stop', self)
         self.stop_btn.setFixedWidth(75)
@@ -76,7 +77,7 @@ class Window(QtWidgets.QWidget):
         self.image8 = QtGui.QPixmap("Asssets/BlockLoad8_8.png").scaled(300, 300, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
 
         self.block = QtWidgets.QLabel()
-        self.block.setPixmap(self.image3)
+        self.block.setPixmap(self.image)
         self.block.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.block.setFixedWidth(300)
         self.block.setFixedHeight(50)
@@ -92,16 +93,35 @@ class Window(QtWidgets.QWidget):
         self.grid.addWidget(self.block, 3, 1)
         self.show()
 
-    def image_window(self):
-        root = Tk()
-        root.geometry("%dx%d+%d+%d" % (800, 600, 300, 300))
-        root.title("Image Slideshow")
-        image_window = DisplayImage(root)
-        image_window.next_image()
-        root.mainloop()
+    def run_next_stage(self):
+        self.stage += 1
+        self.update_main_window()
+        if self.sub_window_active:
+            self.image_window.COUNT += 1
+        else:
+            self.sub_window()
+        
+
+
+    def sub_window(self):
+        self.root = Tk()
+        self.root.geometry("%dx%d+%d+%d" % (800, 600, 300, 300))
+        self.root.title("Image Slideshow")
+        self.image_window = DisplayImage(self.root, self.stage)
+        self.image_window.next_image()
+        self.sub_window_active = True
+        self.root.mainloop()
 
     def func(self):
-        sys.exit(app.exec_())
+        if self.sub_window_active:
+            if self.stage != self.image_window.curr_block:
+                self.stage -= 1
+            self.root.destroy()
+            self.sub_window_active = False
+        else:
+            self.stage = 0
+        self.update_main_window()
+        #sys.exit(app.exec_())
 
     def get_phase(self):
         phase = self.combobox.currentText()
@@ -154,6 +174,28 @@ class Window(QtWidgets.QWidget):
                 self.block2.setParent(None)
                 self.blocks = 0
 
+    def update_main_window(self):
+        match self.stage:
+            case 0:
+                self.block.setPixmap(self.image)
+            case 1:
+                self.block.setPixmap(self.image1)
+            case 2:
+                self.block.setPixmap(self.image2)
+            case 3:
+                self.block.setPixmap(self.image3)
+            case 4:
+                self.block.setPixmap(self.image4)
+            case 5:
+                self.block.setPixmap(self.image5)
+            case 6:
+                self.block.setPixmap(self.image6)
+            case 7:
+                self.block.setPixmap(self.image7)
+            case 8:
+                self.block.setPixmap(self.image8)
+        self.grid.addWidget(self.block, 3, 1)
+
     def add_patient_data(self):
         trial_data = self.line.text()
         with open('neruo.csv', 'w') as file:
@@ -163,46 +205,7 @@ class Window(QtWidgets.QWidget):
         print("Patient Data Collected")
 
 
-class SubWindow(QtWidgets.QWidget):
-    def __init__(self):
-        QtWidgets.QWidget.__init__(self)
-        self.layout = QtWidgets.QGridLayout(self)
-        self.resize(500, 500)
-        self.setWindowTitle("Image Window")
-        self.setStyleSheet('background: #505050')
 
-        self.label = QtWidgets.QLabel()
-        self.layout.addWidget(self.label, 0, 0, 1, 2)
-        self.label.setMinimumSize(200, 200)
-        self.label.setAlignment(QtCore.Qt.AlignCenter)
-
-        self.loadImageButton = QtWidgets.QPushButton('Load image')
-        self.loadImageButton.setStyleSheet("background: #FFFFFF")
-        self.layout.addWidget(self.loadImageButton, 1, 0)
-
-        self.nextImageButton = QtWidgets.QPushButton('Next image')
-        self.nextImageButton.setStyleSheet("background: #FFFFFF")
-        self.layout.addWidget(self.nextImageButton)
-
-        self.loadImageButton.clicked.connect(self.load_image)
-        self.nextImageButton.clicked.connect(self.next_image)
-
-        self.image_bank = iter(["Images/2.jpg", "Images/3.jpg", "Images/4.jpg", "Images/5.jpg", ])
-        self.count = 2
-
-    def load_image(self):
-
-        pixmap = QPixmap('Images/1.jpg').scaled(400, 400, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
-        self.label.setPixmap(pixmap)
-        self.resize(pixmap.width(), pixmap.height())
-        self.show()
-
-    def next_image(self):
-        current_pixmap = QPixmap(f"Images/{self.count}.jpg").scaled(400, 400, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
-        self.label.setPixmap(current_pixmap)
-        self.count += 1
-        if current_pixmap.isNull():
-            self.close()
 
 
 if __name__ == '__main__':
