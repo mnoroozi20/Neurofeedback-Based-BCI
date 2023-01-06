@@ -14,7 +14,6 @@ class DisplayImage:
         self.image_arr = []
         self.COUNT = 1
         self.curr_block = stage-1
-        print(self.curr_block)
         self.folder_dir = os.getcwd() + "/Images/Composite_Images/Block1"
         self.TIME_BETWEEN = 100
         self.CURRENT_FOLDER = "Composite_Images/Block" + str(self.curr_block)
@@ -56,7 +55,6 @@ class DisplayImage:
             if self.COUNT%40 == 0:
                 if self.COUNT > 1:
                     self.curr_block += 1
-                    print(self.curr_block)
                 
 
         self.master.after(self.TIME_BETWEEN, self.next_image)

@@ -17,10 +17,19 @@ class Window(QtWidgets.QWidget):
         self.setStyleSheet('background: #707070')
         self.grid = QtWidgets.QGridLayout()
         self.setLayout(self.grid)
-        # Sub Window
-        
         self.sub_window_active = False
+        self.patient_progress = ['Name', '0', '0', '0']
         self.stage = 0
+        self.prestage = 0
+        self.neurostage = 0
+        self.poststage = 0
+        self.patient_list =[]
+        self.patient_loc = 0
+        with open('NF_Patient_Progress.csv','r') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                self.patient_list.append(row)
+            file.close()
         self.home()
 
     def home(self):
@@ -95,13 +104,20 @@ class Window(QtWidgets.QWidget):
 
     def run_next_stage(self):
         self.stage += 1
+        if self.combobox.currentText() == 'Pre-Evaluation':
+            self.prestage = self.stage
+            self.patient_progress[1] = str(self.stage)
+        elif self.combobox.currentText() == 'Post-Evaluation':
+            self.prestage = self.stage
+            self.patient_progress[3] = str(self.stage)
+        self.update_patient_data()
         self.update_main_window()
         if self.sub_window_active:
             self.image_window.COUNT += 1
         else:
+            self.add_patient_data()
             self.sub_window()
         
-
 
     def sub_window(self):
         self.root = Tk()
@@ -116,6 +132,7 @@ class Window(QtWidgets.QWidget):
         if self.sub_window_active:
             if self.stage != self.image_window.curr_block:
                 self.stage -= 1
+                self.update_patient_data()
             self.root.destroy()
             self.sub_window_active = False
         else:
@@ -197,16 +214,40 @@ class Window(QtWidgets.QWidget):
         self.grid.addWidget(self.block, 3, 1)
 
     def add_patient_data(self):
-        trial_data = self.line.text()
-        with open('neruo.csv', 'w') as file:
+        patient_name = self.line.text()
+        self.patient_progress[0] = patient_name
+        i = 0
+        for row in self.patient_list:
+            if row == []:
+                continue
+            elif row[0] == self.patient_progress[0]:
+                self.patient_loc = i
+                self.patient_progress = row
+                self.patient_loc = len(self.patient_list)-1
+                self.prestage = int(self.patient_progress[1])
+                self.neurostage = int(self.patient_progress[2])
+                self.poststage = int(self.patient_progress[3])
+                self.update_main_window()
+                return 
+            i += 1
+        with open('NF_Patient_Progress.csv', 'a', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(['Patient Name '])
-            writer.writerow(trial_data)  # this technically iterates so will be wonky with single string till more info is captured
+            writer.writerow(self.patient_progress)  # this technically iterates so will be wonky with single string till more info is captured
+            file.close()
+        self.patient_list.append(self.patient_progress)
         print("Patient Data Collected")
 
-
-
-
+    def update_patient_data(self):
+        print(self.patient_list)
+        self.patient_list[self.patient_loc] = self.patient_progress
+        print(self.patient_list)
+        with open('NF_Patient_Progress.csv', 'w', newline='') as file:
+            writer = csv.writer(file)
+            for row in self.patient_list:
+                writer.writerow(row)
+            file.close()
+        print("Patient Data Collected")
+        self.update_main_window()
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
