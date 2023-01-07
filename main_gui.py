@@ -18,7 +18,7 @@ class Window(QtWidgets.QWidget):
         self.grid = QtWidgets.QGridLayout()
         self.setLayout(self.grid)
         self.sub_window_active = False
-        self.patient_progress = ['Name', '0', '0', '0']
+        self.patient_progress = ['', '0', '0', '0']
         self.stage = 0
         self.prestage = 0
         self.neurostage = 0
@@ -103,20 +103,25 @@ class Window(QtWidgets.QWidget):
         self.show()
 
     def run_next_stage(self):
+        if self.sub_window_active:
+            self.image_window.pause = False
+        else:
+            self.add_patient_data()
+            self.sub_window()
         self.stage += 1
         if self.combobox.currentText() == 'Pre-Evaluation':
+            if self.stage > 8:
+                self.stage = 1
             self.prestage = self.stage
             self.patient_progress[1] = str(self.stage)
         elif self.combobox.currentText() == 'Post-Evaluation':
+            if self.stage > 8:
+                self.stage = 1
             self.prestage = self.stage
             self.patient_progress[3] = str(self.stage)
         self.update_patient_data()
         self.update_main_window()
-        if self.sub_window_active:
-            self.image_window.COUNT += 1
-        else:
-            self.add_patient_data()
-            self.sub_window()
+        
         
 
     def sub_window(self):
@@ -130,12 +135,14 @@ class Window(QtWidgets.QWidget):
 
     def func(self):
         if self.sub_window_active:
-            if self.stage != self.image_window.curr_block:
+            if self.stage < self.image_window.curr_block:
                 self.stage -= 1
                 self.update_patient_data()
             self.root.destroy()
             self.sub_window_active = False
         else:
+            self.line.clear()
+            self.patient_progress = ['','0','0','0']
             self.stage = 0
         self.update_main_window()
         #sys.exit(app.exec_())
@@ -192,38 +199,45 @@ class Window(QtWidgets.QWidget):
                 self.blocks = 0
 
     def update_main_window(self):
-        match self.stage:
-            case 0:
-                self.block.setPixmap(self.image)
-            case 1:
-                self.block.setPixmap(self.image1)
-            case 2:
-                self.block.setPixmap(self.image2)
-            case 3:
-                self.block.setPixmap(self.image3)
-            case 4:
-                self.block.setPixmap(self.image4)
-            case 5:
-                self.block.setPixmap(self.image5)
-            case 6:
-                self.block.setPixmap(self.image6)
-            case 7:
-                self.block.setPixmap(self.image7)
-            case 8:
-                self.block.setPixmap(self.image8)
-        self.grid.addWidget(self.block, 3, 1)
+        match self.combobox.currentText():
+            case 'Pre-Evaluation':
+                self.stage = int(self.patient_progress[1])
+            case 'Neurofeedback':
+                self.stage = int(self.patient_progress[2])
+            case 'Post-Evaluation':
+                self.stage = int(self.patient_progress[3])
+        if self.combobox.currentText() == 'Neurofeedback':
+            self.stage = self.patient_progress[2]
+        else:
+            match self.stage:
+                case 0:
+                    self.block.setPixmap(self.image)
+                case 1:
+                    self.block.setPixmap(self.image1)
+                case 2:
+                    self.block.setPixmap(self.image2)
+                case 3:
+                    self.block.setPixmap(self.image3)
+                case 4:
+                    self.block.setPixmap(self.image4)
+                case 5:
+                    self.block.setPixmap(self.image5)
+                case 6:
+                    self.block.setPixmap(self.image6)
+                case 7:
+                    self.block.setPixmap(self.image7)
+                case 8:
+                    self.block.setPixmap(self.image8)
+            self.grid.addWidget(self.block, 3, 1)
 
     def add_patient_data(self):
         patient_name = self.line.text()
         self.patient_progress[0] = patient_name
         i = 0
         for row in self.patient_list:
-            if row == []:
-                continue
-            elif row[0] == self.patient_progress[0]:
+            if row[0] == self.patient_progress[0]:
                 self.patient_loc = i
                 self.patient_progress = row
-                self.patient_loc = len(self.patient_list)-1
                 self.prestage = int(self.patient_progress[1])
                 self.neurostage = int(self.patient_progress[2])
                 self.poststage = int(self.patient_progress[3])
@@ -235,19 +249,19 @@ class Window(QtWidgets.QWidget):
             writer.writerow(self.patient_progress)  # this technically iterates so will be wonky with single string till more info is captured
             file.close()
         self.patient_list.append(self.patient_progress)
-        print("Patient Data Collected")
+        self.patient_loc = len(self.patient_list)-1
+        self.update_main_window()
+        print('Patient Data Updated')
 
     def update_patient_data(self):
-        print(self.patient_list)
         self.patient_list[self.patient_loc] = self.patient_progress
-        print(self.patient_list)
         with open('NF_Patient_Progress.csv', 'w', newline='') as file:
             writer = csv.writer(file)
             for row in self.patient_list:
                 writer.writerow(row)
             file.close()
-        print("Patient Data Collected")
         self.update_main_window()
+        print('Patient Data Updated')
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
