@@ -108,7 +108,8 @@ class Window(QtWidgets.QWidget):
         else:
             self.add_patient_data()
             self.sub_window()
-        self.stage += 1
+        
+        self.stage += 1 
         if self.combobox.currentText() == 'Pre-Evaluation':
             if self.stage > 8:
                 self.stage = 1
@@ -197,6 +198,7 @@ class Window(QtWidgets.QWidget):
                 self.block3.setParent(None)
                 self.block2.setParent(None)
                 self.blocks = 0
+        self.update_main_window()
 
     def update_main_window(self):
         match self.combobox.currentText():
