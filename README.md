@@ -2,6 +2,8 @@
 URI Translational Neurofeedback Lab Project
 
 Neurofeedback based BCI for attention training and analysis
+
+
 \Maryam
 Python 3.8.10
 Package         Version
