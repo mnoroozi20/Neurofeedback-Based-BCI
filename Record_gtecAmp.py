@@ -1,3 +1,4 @@
+
 import csv 
 import pygds as g
 d = g.GDS()
@@ -13,3 +14,5 @@ with open('egg_data.csv', 'w') as file:
     writer = csv.writer(file)
     for row in data:
         writer.writerow(data)
+d.Close()
+del(d)
