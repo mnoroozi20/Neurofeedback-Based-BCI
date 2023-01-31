@@ -30,7 +30,7 @@ if not isExist:
     else:
         print("Successfully created the directory %s" % path)
 
-with open(os.path.join(path, file_name), 'w') as temp_file:
+with open(os.path.join(path, file_name), 'w') as temp_file:  # to be used in g-tech recording to get data variable
     print("Files added")
     writer = csv.writer(temp_file)
     for row in data:
