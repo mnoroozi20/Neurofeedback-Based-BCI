@@ -23,9 +23,9 @@ class Window(QtWidgets.QWidget):
         self.prestage = 0
         self.neurostage = 0
         self.poststage = 0
-        self.patient_list =[]
+        self.patient_list = []
         self.patient_loc = 0
-        with open('NF_Patient_Progress.csv','r') as file:
+        with open('NF_Patient_Progress.csv', 'r') as file:
             reader = csv.reader(file)
             for row in reader:
                 self.patient_list.append(row)
@@ -108,8 +108,8 @@ class Window(QtWidgets.QWidget):
         else:
             self.add_patient_data()
             self.sub_window()
-        
-        self.stage += 1 
+
+        self.stage += 1
         if self.combobox.currentText() == 'Pre-Evaluation':
             if self.stage > 8:
                 self.stage = 1
@@ -122,8 +122,6 @@ class Window(QtWidgets.QWidget):
             self.patient_progress[3] = str(self.stage)
         self.update_patient_data()
         self.update_main_window()
-        
-        
 
     def sub_window(self):
         self.root = Tk()
@@ -143,15 +141,15 @@ class Window(QtWidgets.QWidget):
             self.sub_window_active = False
         else:
             self.line.clear()
-            self.patient_progress = ['','0','0','0']
+            self.patient_progress = ['', '0', '0', '0']
             self.stage = 0
         self.update_main_window()
-        #sys.exit(app.exec_())
+        # sys.exit(app.exec_())
 
     def get_phase(self):
         phase = self.combobox.currentText()
         return phase
-    
+
     def onStageChange(self, text):
         if text == 'Neurofeedback':
             self.blocks = 1
@@ -180,10 +178,10 @@ class Window(QtWidgets.QWidget):
             self.block5.setFixedWidth(300)
             self.block5.setFixedHeight(50)
 
-            self.grid.addWidget(self.block2,4,1)
-            self.grid.addWidget(self.block3,5,1)
-            self.grid.addWidget(self.block4,6,1)
-            self.grid.addWidget(self.block5,7,1)
+            self.grid.addWidget(self.block2, 4, 1)
+            self.grid.addWidget(self.block3, 5, 1)
+            self.grid.addWidget(self.block4, 6, 1)
+            self.grid.addWidget(self.block5, 7, 1)
         elif text == 'Post-Evaluation':
             if self.blocks == 1:
                 self.block5.setParent(None)
@@ -244,14 +242,15 @@ class Window(QtWidgets.QWidget):
                 self.neurostage = int(self.patient_progress[2])
                 self.poststage = int(self.patient_progress[3])
                 self.update_main_window()
-                return 
+                return
             i += 1
         with open('NF_Patient_Progress.csv', 'a', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(self.patient_progress)  # this technically iterates so will be wonky with single string till more info is captured
+            writer.writerow(
+                self.patient_progress)  # this technically iterates so will be wonky with single string till more info is captured
             file.close()
         self.patient_list.append(self.patient_progress)
-        self.patient_loc = len(self.patient_list)-1
+        self.patient_loc = len(self.patient_list) - 1
         self.update_main_window()
         print('Patient Data Updated')
 
@@ -264,6 +263,7 @@ class Window(QtWidgets.QWidget):
             file.close()
         self.update_main_window()
         print('Patient Data Updated')
+
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
