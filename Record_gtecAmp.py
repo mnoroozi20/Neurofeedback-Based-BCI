@@ -1,6 +1,4 @@
-
 import pygds as g
-import pygds
 import numpy as np
 import pandas as pd
 
@@ -12,7 +10,7 @@ d.SamplingRate, d.NumberOfScans = minf_s
 for ch in d.Channels:
     ch.Acquire = True
 d.SetConfiguration()
-scope = pygds.Scope(1/d.SamplingRate, title="Channels: %s", ylabel = u"U[μV]")
+scope = g.Scope(1/d.SamplingRate, title="Channels: %s", ylabel = u"U[μV]")
 
 Matrixdata=[]
 event_time=int(input('Enter the time of event:'))
