@@ -31,3 +31,7 @@ df2['I/O'] = block2_io
 print(df2)
 
 df2 = df2.to_csv('test.csv')
+
+# to add dataframes to right of another:
+
+df_out = pd.concat([df1, df2], axis=1)
