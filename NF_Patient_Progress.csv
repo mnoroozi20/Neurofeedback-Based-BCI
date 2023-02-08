@@ -1,9 +1,7 @@
 Patient Name,Pre-Evaluation,Neurofeedback,Post-Evaluation
 Jane Doe,3,0,3
-John Doe,7,0,0
+John Doe,0,0,0
 Joe Doe,6,0,1
 Luke,7,0,0
 John,2,0,0
-Larry,2,0,0
-Jerry,2,0,0
-Kevin,3,0,0
+Larry,1,0,0
