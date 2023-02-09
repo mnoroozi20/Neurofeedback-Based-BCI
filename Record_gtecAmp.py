@@ -10,16 +10,16 @@ d.SamplingRate, d.NumberOfScans = minf_s
 for ch in d.Channels:
     ch.Acquire = True
 d.SetConfiguration()
-scope = g.Scope(1/d.SamplingRate, title="Channels: %s", ylabel = u"U[μV]")
+scope = g.Scope(1 / d.SamplingRate, title="Channels: %s", ylabel=u"U[μV]")
 
-Matrixdata=[]
-event_time=int(input('Enter the time of event:'))
-i=0
-while i<event_time:
+matrix_data = []
+event_time = int(input('Enter the time of event:'))
+i = 0
+while i < event_time:
     aa = d.GetData(d.SamplingRate)
-    Matrixdata.extend(aa)   
-    i+=1
-my_array = np.array(Matrixdata)
+    matrix_data.extend(aa)
+    i += 1
+my_array = np.array(matrix_data)
 
 # print(my_array)
 # print(type(my_array))
