@@ -191,7 +191,7 @@ for n in range(2):
                 f_img = Image.open('Images/FemaleFace/' + female_faces[fcount]).convert('L')
             case 1:
                 mcount = mcount + 1
-                faces.append('I')
+                faces.append('M')
                 f_img = Image.open('Images/MaleFace/' + male_faces[mcount]).convert('L')
         mask = Image.new("L", f_img.size, 128)
         im = Image.composite(f_img, s_img, mask) # composite greyscale images using mask
@@ -252,7 +252,7 @@ for n in range(2):
                 f_img = Image.open('Images/FemaleFace/' + female_faces[fcount]).convert('L')
             case 1:
                 mcount = mcount + 1
-                faces.append('I')
+                faces.append('M')
                 f_img = Image.open('Images/MaleFace/' + male_faces[mcount]).convert('L')
         mask = Image.new("L", f_img.size, 128)
         im = Image.composite(f_img, s_img, mask) # composite greyscale images using mask
