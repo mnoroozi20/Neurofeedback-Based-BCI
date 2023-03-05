@@ -128,6 +128,8 @@ class Window(QtWidgets.QWidget):
         self.root.geometry("%dx%d+%d+%d" % (800, 600, 300, 300))
         self.root.title("Image Slideshow")
         self.image_window = DisplayImage(self.root, self.stage)
+        self.block_sequence = self.image_window.randomized_blocks
+        print(self.block_sequence)
         self.image_window.next_image()
         self.sub_window_active = True
         self.root.mainloop()
