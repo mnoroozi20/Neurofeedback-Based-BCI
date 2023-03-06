@@ -7,6 +7,7 @@ import csv
 import time
 from os import listdir
 from image_display import *
+import numpy as np
 
 
 class Window(QtWidgets.QWidget):
@@ -18,7 +19,7 @@ class Window(QtWidgets.QWidget):
         self.grid = QtWidgets.QGridLayout()
         self.setLayout(self.grid)
         self.sub_window_active = False
-        self.patient_progress = ['', '0', '0', '0']
+        self.patient_progress = ['', '0', '0', '0','0']
         self.stage = 0
         self.prestage = 0
         self.neurostage = 0
@@ -129,7 +130,8 @@ class Window(QtWidgets.QWidget):
         self.root.title("Image Slideshow")
         self.image_window = DisplayImage(self.root, self.stage)
         self.block_sequence = self.image_window.randomized_blocks
-        print(self.block_sequence)
+        self.seq = " ".join(str(x) for x in self.block_sequence)
+        print(self.seq)
         self.image_window.next_image()
         self.sub_window_active = True
         self.root.mainloop()
