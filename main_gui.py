@@ -19,11 +19,12 @@ class Window(QtWidgets.QWidget):
         self.grid = QtWidgets.QGridLayout()
         self.setLayout(self.grid)
         self.sub_window_active = False
-        self.patient_progress = ['', '0', '0', '0','0']
+        self.patient_progress = ['', '0', '0', '0','1']
         self.stage = 0
         self.prestage = 0
         self.neurostage = 0
         self.poststage = 0
+        self.block = None
         self.patient_list = []
         self.patient_loc = 0
         with open('NF_Patient_Progress.csv', 'r') as file:
@@ -86,11 +87,11 @@ class Window(QtWidgets.QWidget):
         self.image7 = QtGui.QPixmap("Asssets/BlockLoad7_8.png").scaled(300, 300, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
         self.image8 = QtGui.QPixmap("Asssets/BlockLoad8_8.png").scaled(300, 300, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
 
-        self.block = QtWidgets.QLabel()
-        self.block.setPixmap(self.image)
-        self.block.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        self.block.setFixedWidth(300)
-        self.block.setFixedHeight(50)
+        self.block_num_img = QtWidgets.QLabel()
+        self.block_num_img.setPixmap(self.image)
+        self.block_num_img.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.block_num_img.setFixedWidth(300)
+        self.block_num_img.setFixedHeight(50)
 
         self.grid.addWidget(label1, 0, 0)
         self.grid.addWidget(self.line, 0, 1)
@@ -100,7 +101,7 @@ class Window(QtWidgets.QWidget):
         self.grid.addWidget(self.label2, 2, 0)
         self.grid.addWidget(self.combobox, 2, 1)
         self.grid.addWidget(self.label3, 3, 0)
-        self.grid.addWidget(self.block, 3, 1)
+        self.grid.addWidget(self.block_num_img, 3, 1)
         self.show()
 
     def run_next_stage(self):
@@ -215,24 +216,24 @@ class Window(QtWidgets.QWidget):
         else:
             match self.stage:
                 case 0:
-                    self.block.setPixmap(self.image)
+                    self.block_num_img.setPixmap(self.image)
                 case 1:
-                    self.block.setPixmap(self.image1)
+                    self.block_num_img.setPixmap(self.image1)
                 case 2:
-                    self.block.setPixmap(self.image2)
+                    self.block_num_img.setPixmap(self.image2)
                 case 3:
-                    self.block.setPixmap(self.image3)
+                    self.block_num_img.setPixmap(self.image3)
                 case 4:
-                    self.block.setPixmap(self.image4)
+                    self.block_num_img.setPixmap(self.image4)
                 case 5:
-                    self.block.setPixmap(self.image5)
+                    self.block_num_img.setPixmap(self.image5)
                 case 6:
-                    self.block.setPixmap(self.image6)
+                    self.block_num_img.setPixmap(self.image6)
                 case 7:
-                    self.block.setPixmap(self.image7)
+                    self.block_num_img.setPixmap(self.image7)
                 case 8:
-                    self.block.setPixmap(self.image8)
-            self.grid.addWidget(self.block, 3, 1)
+                    self.block_num_img.setPixmap(self.image8)
+            self.grid.addWidget(self.block_num_img, 3, 1)
 
     def add_patient_data(self):
         patient_name = self.line.text()
@@ -256,9 +257,11 @@ class Window(QtWidgets.QWidget):
         self.patient_list.append(self.patient_progress)
         self.patient_loc = len(self.patient_list) - 1
         self.update_main_window()
-        print('Patient Data Updated')
+        print('Patient Data Added')
+        print(self.patient_progress)
 
     def update_patient_data(self):
+        self.patient_progress[4] = self.seq
         self.patient_list[self.patient_loc] = self.patient_progress
         with open('NF_Patient_Progress.csv', 'w', newline='') as file:
             writer = csv.writer(file)
@@ -267,6 +270,7 @@ class Window(QtWidgets.QWidget):
             file.close()
         self.update_main_window()
         print('Patient Data Updated')
+        print(self.patient_progress)
 
 
 if __name__ == '__main__':
