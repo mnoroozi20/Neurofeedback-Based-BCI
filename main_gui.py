@@ -21,12 +21,12 @@ class Window(QtWidgets.QWidget):
         self.sub_window_active = False
         self.patient_progress = ['', '0', '0', '0','1']
         self.stage = 0
-        self.prestage = 0
-        self.neurostage = 0
-        self.poststage = 0
+        self.pre_stage = 0
+        self.neuro_stage = 0
+        self.post_stage = 0
         self.block = None
         self.patient_list = []
-        self.patient_loc = 0
+        self.patient_index = 0
         with open('NF_Patient_Progress.csv', 'r') as file:
             reader = csv.reader(file)
             for row in reader:
@@ -46,10 +46,10 @@ class Window(QtWidgets.QWidget):
         self.patient_btn.setStyleSheet('background: #1634EF')
         self.patient_btn.clicked.connect(self.add_patient_data)
 
-        self.line = QtWidgets.QLineEdit(self)
-        self.line.setFixedWidth(200)
+        self.patient_data_entry = QtWidgets.QLineEdit(self)
+        self.patient_data_entry.setFixedWidth(200)
         # label1.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.line.setStyleSheet('background: #EEEEEE; margin-right: 20px')
+        self.patient_data_entry.setStyleSheet('background: #EEEEEE; margin-right: 20px')
 
         self.start_btn = QtWidgets.QPushButton('Start', self)
         self.start_btn.setFixedWidth(75)
@@ -65,13 +65,13 @@ class Window(QtWidgets.QWidget):
         self.label2.setFixedWidth(50)
         self.label2.setStyleSheet('font-size: 15px')
 
-        self.combobox = QtWidgets.QComboBox(self)
-        self.combobox.addItem('Pre-Evaluation')
-        self.combobox.addItem('Neurofeedback')
-        self.combobox.addItem('Post-Evaluation')
-        self.combobox.setFixedWidth(100)
-        self.combobox.setStyleSheet('background: #FFFFFF; margin-left: 1px; margin-right: 1px')
-        self.combobox.activated[str].connect(self.onStageChange)
+        self.phase_combobox = QtWidgets.QComboBox(self)
+        self.phase_combobox.addItem('Pre-Evaluation')
+        self.phase_combobox.addItem('Neurofeedback')
+        self.phase_combobox.addItem('Post-Evaluation')
+        self.phase_combobox.setFixedWidth(100)
+        self.phase_combobox.setStyleSheet('background: #FFFFFF; margin-left: 1px; margin-right: 1px')
+        self.phase_combobox.activated[str].connect(self.onStageChange)
 
         self.label3 = QtWidgets.QLabel('Stage:')
         self.label3.setFixedWidth(50)
@@ -94,12 +94,12 @@ class Window(QtWidgets.QWidget):
         self.block_num_img.setFixedHeight(50)
 
         self.grid.addWidget(label1, 0, 0)
-        self.grid.addWidget(self.line, 0, 1)
+        self.grid.addWidget(self.patient_data_entry, 0, 1)
         self.grid.addWidget(self.start_btn, 0, 2)
         self.grid.addWidget(self.stop_btn, 0, 3)
         self.grid.addWidget(self.patient_btn, 1, 1)
         self.grid.addWidget(self.label2, 2, 0)
-        self.grid.addWidget(self.combobox, 2, 1)
+        self.grid.addWidget(self.phase_combobox, 2, 1)
         self.grid.addWidget(self.label3, 3, 0)
         self.grid.addWidget(self.block_num_img, 3, 1)
         self.show()
@@ -112,15 +112,15 @@ class Window(QtWidgets.QWidget):
             self.sub_window()
 
         self.stage += 1
-        if self.combobox.currentText() == 'Pre-Evaluation':
+        if self.phase_combobox.currentText() == 'Pre-Evaluation':
             if self.stage > 8:
                 self.stage = 1
-            self.prestage = self.stage
+            self.pre_stage = self.stage
             self.patient_progress[1] = str(self.stage)
-        elif self.combobox.currentText() == 'Post-Evaluation':
+        elif self.phase_combobox.currentText() == 'Post-Evaluation':
             if self.stage > 8:
                 self.stage = 1
-            self.prestage = self.stage
+            self.pre_stage = self.stage
             self.patient_progress[3] = str(self.stage)
         self.update_patient_data()
         self.update_main_window()
@@ -145,14 +145,14 @@ class Window(QtWidgets.QWidget):
             self.root.destroy()
             self.sub_window_active = False
         else:
-            self.line.clear()
+            self.patient_data_entry.clear()
             self.patient_progress = ['', '0', '0', '0']
             self.stage = 0
         self.update_main_window()
         # sys.exit(app.exec_())
 
     def get_phase(self):
-        phase = self.combobox.currentText()
+        phase = self.phase_combobox.currentText()
         return phase
 
     def onStageChange(self, text):
@@ -204,14 +204,14 @@ class Window(QtWidgets.QWidget):
         self.update_main_window()
 
     def update_main_window(self):
-        match self.combobox.currentText():
+        match self.phase_combobox.currentText():
             case 'Pre-Evaluation':
                 self.stage = int(self.patient_progress[1])
             case 'Neurofeedback':
                 self.stage = int(self.patient_progress[2])
             case 'Post-Evaluation':
                 self.stage = int(self.patient_progress[3])
-        if self.combobox.currentText() == 'Neurofeedback':
+        if self.phase_combobox.currentText() == 'Neurofeedback':
             self.stage = self.patient_progress[2]
         else:
             match self.stage:
@@ -236,16 +236,16 @@ class Window(QtWidgets.QWidget):
             self.grid.addWidget(self.block_num_img, 3, 1)
 
     def add_patient_data(self):
-        patient_name = self.line.text()
+        patient_name = self.patient_data_entry.text()
         self.patient_progress[0] = patient_name
         i = 0
         for row in self.patient_list:
             if row[0] == self.patient_progress[0]:
-                self.patient_loc = i
+                self.patient_index = i
                 self.patient_progress = row
-                self.prestage = int(self.patient_progress[1])
-                self.neurostage = int(self.patient_progress[2])
-                self.poststage = int(self.patient_progress[3])
+                self.pre_stage = int(self.patient_progress[1])
+                self.neuro_stage = int(self.patient_progress[2])
+                self.post_stage = int(self.patient_progress[3])
                 self.update_main_window()
                 return
             i += 1
@@ -255,14 +255,14 @@ class Window(QtWidgets.QWidget):
                 self.patient_progress)  # this technically iterates so will be wonky with single string till more info is captured
             file.close()
         self.patient_list.append(self.patient_progress)
-        self.patient_loc = len(self.patient_list) - 1
+        self.patient_index = len(self.patient_list) - 1
         self.update_main_window()
         print('Patient Data Added')
         print(self.patient_progress)
 
     def update_patient_data(self):
         self.patient_progress[4] = self.seq
-        self.patient_list[self.patient_loc] = self.patient_progress
+        self.patient_list[self.patient_index] = self.patient_progress
         with open('NF_Patient_Progress.csv', 'w', newline='') as file:
             writer = csv.writer(file)
             for row in self.patient_list:
