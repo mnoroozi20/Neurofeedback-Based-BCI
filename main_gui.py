@@ -59,7 +59,7 @@ class Window(QtWidgets.QWidget):
         self.stop_btn = QtWidgets.QPushButton('Stop', self)
         self.stop_btn.setFixedWidth(75)
         self.stop_btn.setStyleSheet('background: #B80F0A')
-        self.stop_btn.clicked.connect(self.func)
+        self.stop_btn.clicked.connect(self.stop_trial_func)
 
         self.label2 = QtWidgets.QLabel('Phase:')
         self.label2.setFixedWidth(50)
@@ -137,7 +137,7 @@ class Window(QtWidgets.QWidget):
         self.sub_window_active = True
         self.root.mainloop()
 
-    def func(self):
+    def stop_trial_func(self):
         if self.sub_window_active:
             if self.stage < self.image_window.curr_block:
                 self.stage -= 1
