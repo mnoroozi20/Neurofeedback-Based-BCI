@@ -36,9 +36,9 @@ class Window(QtWidgets.QWidget):
     def create_home(self):
         self.blocks = 0
 
-        label1 = QtWidgets.QLabel('Patient:')
-        label1.setFixedWidth(50)
-        label1.setStyleSheet('font-size: 15px; ')
+        patient_label = QtWidgets.QLabel('Patient:')
+        patient_label.setFixedWidth(50)
+        patient_label.setStyleSheet('font-size: 15px; ')
 
         self.patient_btn = QtWidgets.QPushButton('Add Patient Data', self)
         self.patient_btn.setFixedWidth(100)
@@ -47,7 +47,7 @@ class Window(QtWidgets.QWidget):
 
         self.patient_data_entry = QtWidgets.QLineEdit(self)
         self.patient_data_entry.setFixedWidth(200)
-        # label1.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        # patient_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.patient_data_entry.setStyleSheet('background: #EEEEEE; margin-right: 20px')
 
         self.start_btn = QtWidgets.QPushButton('Start', self)
@@ -60,9 +60,9 @@ class Window(QtWidgets.QWidget):
         self.stop_btn.setStyleSheet('background: #B80F0A')
         self.stop_btn.clicked.connect(self.stop_trial_func)
 
-        self.label2 = QtWidgets.QLabel('Phase:')
-        self.label2.setFixedWidth(50)
-        self.label2.setStyleSheet('font-size: 15px')
+        self.phase_label = QtWidgets.QLabel('Phase:')
+        self.phase_label.setFixedWidth(50)
+        self.phase_label.setStyleSheet('font-size: 15px')
 
         self.phase_combobox = QtWidgets.QComboBox(self)
         self.phase_combobox.addItem('Pre-Evaluation')
@@ -72,9 +72,9 @@ class Window(QtWidgets.QWidget):
         self.phase_combobox.setStyleSheet('background: #FFFFFF; margin-left: 1px; margin-right: 1px')
         self.phase_combobox.activated[str].connect(self.onStageChange)
 
-        self.label3 = QtWidgets.QLabel('Stage:')
-        self.label3.setFixedWidth(50)
-        self.label3.setStyleSheet('font-size: 15px')
+        self.stage_label = QtWidgets.QLabel('Stage:')
+        self.stage_label.setFixedWidth(50)
+        self.stage_label.setStyleSheet('font-size: 15px')
 
         self.image = QtGui.QPixmap("Asssets/BlockLoad0_8.png").scaled(300, 300, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
         self.image1 = QtGui.QPixmap("Asssets/BlockLoad1_8.png").scaled(300, 300, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
@@ -92,14 +92,14 @@ class Window(QtWidgets.QWidget):
         self.block_num_img.setFixedWidth(300)
         self.block_num_img.setFixedHeight(50)
 
-        self.grid.addWidget(label1, 0, 0)
+        self.grid.addWidget(patient_label, 0, 0)
         self.grid.addWidget(self.patient_data_entry, 0, 1)
         self.grid.addWidget(self.start_btn, 0, 2)
         self.grid.addWidget(self.stop_btn, 0, 3)
         self.grid.addWidget(self.patient_btn, 1, 1)
-        self.grid.addWidget(self.label2, 2, 0)
+        self.grid.addWidget(self.phase_label, 2, 0)
         self.grid.addWidget(self.phase_combobox, 2, 1)
-        self.grid.addWidget(self.label3, 3, 0)
+        self.grid.addWidget(self.stage_label, 3, 0)
         self.grid.addWidget(self.block_num_img, 3, 1)
         self.show()
 
@@ -203,35 +203,62 @@ class Window(QtWidgets.QWidget):
         self.update_main_window()
 
     def update_main_window(self):
-        match self.phase_combobox.currentText():
-            case 'Pre-Evaluation':
-                self.stage = int(self.patient_progress[1])
-            case 'Neurofeedback':
-                self.stage = int(self.patient_progress[2])
-            case 'Post-Evaluation':
-                self.stage = int(self.patient_progress[3])
+        # match self.phase_combobox.currentText():
+        #     case 'Pre-Evaluation':
+        #         self.stage = int(self.patient_progress[1])
+        #     case 'Neurofeedback':
+        #         self.stage = int(self.patient_progress[2])
+        #     case 'Post-Evaluation':
+        #         self.stage = int(self.patient_progress[3])
+
+        if self.phase_combobox.currentText() == 'Pre-Evaluation':
+            self.stage = int(self.patient_progress[1])
+        elif self.phase_combobox.currentText() == 'Neurofeedback':
+            self.stage = int(self.patient_progress[2])
+        elif self.phase_combobox.currentText() == 'Post-Evaluation':
+            self.stage = int(self.patient_progress[3])
+
         if self.phase_combobox.currentText() == 'Neurofeedback':
             self.stage = self.patient_progress[2]
         else:
-            match self.stage:
-                case 0:
-                    self.block_num_img.setPixmap(self.image)
-                case 1:
-                    self.block_num_img.setPixmap(self.image1)
-                case 2:
-                    self.block_num_img.setPixmap(self.image2)
-                case 3:
-                    self.block_num_img.setPixmap(self.image3)
-                case 4:
-                    self.block_num_img.setPixmap(self.image4)
-                case 5:
-                    self.block_num_img.setPixmap(self.image5)
-                case 6:
-                    self.block_num_img.setPixmap(self.image6)
-                case 7:
-                    self.block_num_img.setPixmap(self.image7)
-                case 8:
-                    self.block_num_img.setPixmap(self.image8)
+            if self.stage == 0:
+                self.block_num_img.setPixmap(self.image)
+            elif self.stage == 1:
+                self.block_num_img.setPixmap(self.image1)
+            elif self.stage == 2:
+                self.block_num_img.setPixmap(self.image2)
+            elif self.stage == 3:
+                self.block_num_img.setPixmap(self.image3)
+            elif self.stage == 4:
+                self.block_num_img.setPixmap(self.image4)
+            elif self.stage == 5:
+                self.block_num_img.setPixmap(self.image5)
+            elif self.stage == 6:
+                self.block_num_img.setPixmap(self.image6)
+            elif self.stage == 7:
+                self.block_num_img.setPixmap(self.image7)
+            elif self.stage == 8:
+                self.block_num_img.setPixmap(self.image8)
+
+            # match self.stage:
+            #     case 0:
+            #         self.block_num_img.setPixmap(self.image)
+            #     case 1:
+            #         self.block_num_img.setPixmap(self.image1)
+            #     case 2:
+            #         self.block_num_img.setPixmap(self.image2)
+            #     case 3:
+            #         self.block_num_img.setPixmap(self.image3)
+            #     case 4:
+            #         self.block_num_img.setPixmap(self.image4)
+            #     case 5:
+            #         self.block_num_img.setPixmap(self.image5)
+            #     case 6:
+            #         self.block_num_img.setPixmap(self.image6)
+            #     case 7:
+            #         self.block_num_img.setPixmap(self.image7)
+            #     case 8:
+            #         self.block_num_img.setPixmap(self.image8)
             self.grid.addWidget(self.block_num_img, 3, 1)
 
     def add_patient_data(self):
