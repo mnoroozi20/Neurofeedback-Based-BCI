@@ -31,10 +31,9 @@ class Window(QtWidgets.QWidget):
             reader = csv.reader(file)
             for row in reader:
                 self.patient_list.append(row)
-            file.close()
-        self.home()
+        self.create_home()
 
-    def home(self):
+    def create_home(self):
         self.blocks = 0
 
         label1 = QtWidgets.QLabel('Patient:')
